@@ -1,0 +1,56 @@
+[server]
+; Cette section est pour les configurations générales du serveur, mais elle est vide ici. ; Section pour les paramètres généraux du serveur, non utilisée ici.
+
+[mysqld]
+; Configurations pour le processus principal du serveur MariaDB/MySQL (mysqld). ; Paramètres pour le démon mysqld de MariaDB/MySQL.
+
+user = mysql
+; Spécifie l'utilisateur système qui exécute le processus du serveur (sécurité). ; Définit l'utilisateur système exécutant le serveur (mysql pour sécurité).
+
+pid-file = /run/mysqld/mysqld.pid
+; Chemin du fichier PID qui stocke l'ID du processus du serveur. ; Emplacement du fichier contenant l'identifiant du processus serveur.
+
+basedir = /usr
+; Répertoire de base où sont installés les binaires et bibliothèques de MariaDB. ; Dossier racine des fichiers exécutables et bibliothèques de MariaDB.
+
+datadir = /var/lib/mysql
+; Répertoire où sont stockées les données des bases de données (tables, index). ; Emplacement des fichiers de données des bases (tables, index, etc.).
+
+tmpdir = /tmp
+; Répertoire pour les fichiers temporaires créés lors des opérations du serveur. ; Dossier pour les fichiers temporaires générés par le serveur.
+
+lc-messages-dir = /usr/share/mysql
+; Chemin des fichiers de messages d'erreur multilingues. ; Répertoire des fichiers de messages d'erreur dans différentes langues.
+
+lc-messages = en_US
+; Langue des messages d'erreur et journaux (anglais américain). ; Langue utilisée pour les messages d'erreur (anglais US).
+
+skip-external-locking
+; Désactive le verrouillage externe pour améliorer les performances (InnoDB). ; Désactive les verrous externes pour optimiser les performances.
+
+bind-address = *
+; Écoute toutes les interfaces réseau (permet les connexions distantes). ; Écoute sur toutes les interfaces réseau (accès distant autorisé).
+
+port = 3306
+; Port TCP utilisé pour les connexions des clients (standard MariaDB/MySQL). ; Port TCP pour les connexions client (3306 par défaut).
+
+socket = /run/mysqld/mysqld.sock
+; Chemin du socket Unix pour les connexions locales (plus rapide que TCP). ; Emplacement du socket Unix pour connexions locales.
+
+expire_logs_days = 10
+; Durée (en jours) avant suppression automatique des journaux binaires. ; Nombre de jours avant suppression des journaux binaires.
+
+character-set-server = utf8mb4
+; Jeu de caractères par défaut du serveur (prend en charge Unicode complet). ; Jeu de caractères par défaut (utf8mb4 pour Unicode complet).
+
+collation-server = utf8mb4_general_ci
+; Règle de tri par défaut (insensible à la casse, rapide). ; Règle de tri par défaut (insensible à la casse).
+
+[embedded]
+; Section pour le mode serveur intégré (rare, non utilisée ici). ; Paramètres pour le serveur intégré, non utilisés ici.
+
+[mariadb]
+; Configurations générales pour toutes les versions de MariaDB (vide ici). ; Paramètres globaux pour MariaDB, non définis ici.
+
+[mariadb-10.5]
+; Configurations spécifiques à MariaDB 10.5 (vide ici). ; Paramètres pour la version MariaDB 10.5, non définis ici.

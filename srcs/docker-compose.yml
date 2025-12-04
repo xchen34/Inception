@@ -1,0 +1,107 @@
+services:
+  mariadb:
+    container_name: mariadb
+    image: mariadb:10.5
+    networks:
+    - inception
+    build:
+      context: requirements/mariadb
+      dockerfile: Dockerfile
+    env_file: .env
+    secrets:
+    - db_root_password
+    - db_password
+    volumes:
+    - mariadb_data:/var/lib/mysql
+    restart: always
+    expose:
+    - "3306"
+
+  wordpress:
+    container_name: wordpress
+    image: wordpress:5.7.11
+    env_file: .env
+    secrets:
+    - db_password
+    - wd_adm_user
+    - wd_adm_mail
+    - wd_adm_password
+    - wd_guest_user
+    - wd_guest_mail
+    - wd_guest_password
+    volumes:
+    - wordpress_data:/var/www/html
+    networks:
+    - inception
+    build:
+      context: requirements/wordpress
+      dockerfile: Dockerfile
+    depends_on:
+    - mariadb
+    restart: always
+    expose:
+    - "9000"
+
+  nginx:
+    container_name: nginx
+    image: nginx:1.18.0
+    volumes:
+    - wordpress_data:/var/www/html
+    networks:
+    - inception
+    depends_on:
+    - wordpress
+    build:
+      context: requirements/nginx
+      dockerfile: Dockerfile
+    env_file: .env
+    ports:
+    - "443:443"
+    restart: always
+
+volumes:
+  wordpress_data:           # Nom logique du volume
+    name: wordpress_data    # Nom réel du volume (optionnel)
+    driver: local           # Utilise le système de fichiers local
+    driver_opts:            # Options spécifiques
+      type: 'none'          # Type spécial pour bind mount
+      o: 'bind'             # Spécifie le type de montage
+      device: '/home/leochen/data/wordpress'  # Chemin absolu sur l'hôte
+  mariadb_data:
+    name: mariadb_data
+    driver: local  #utiliser le system de ficher local
+    driver_opts:
+      type: 'none'
+      o: 'bind'  # option: creer lien direct entre un dossier de votre machine et le conteneur
+      device: '/home/leochen/data/mariadb' #chemin absolu sur hote
+  
+networks:
+  inception:
+    name: "inception" 
+    driver: "bridge"
+
+secrets:
+  db_password:
+    file: ../secrets/db_password.txt
+  db_root_password:
+    file: ../secrets/db_root_password.txt
+
+  wd_adm_user:
+    file: ../secrets/wd_adm_user.txt
+  wd_adm_mail:
+    file: ../secrets/wd_adm_mail.txt
+  wd_adm_password:
+    file: ../secrets/wd_adm_password.txt
+
+  wd_guest_user:
+    file: ../secrets/wd_guest_user.txt
+  wd_guest_mail:
+    file: ../secrets/wd_guest_mail.txt
+  wd_guest_password:
+    file: ../secrets/wd_guest_password.txt
+
+
+#build Indique à Docker Compose qu'il doit construire une image personnalisée au lieu d'utiliser directement l'image officielle
+#context indique ou se trouve les ficihers pour construire image 
+#bridge network 	默认类型，容器间可互通，隔离于主机网络
+#depends on: attend un autre service qui demarre avant de lancer
